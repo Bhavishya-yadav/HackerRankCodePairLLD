@@ -5,7 +5,7 @@ public class User {
     private String id;
     private UserRole role;
 
-    public User(String name, User Role) {
+    public User(String name, UserRole Role) {
         this.name = name;
         this.id = UUID.randomUUID().toString().substring(4);
         this.role = role;

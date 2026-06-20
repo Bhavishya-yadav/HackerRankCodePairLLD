@@ -1,5 +1,5 @@
 public enum SessionStatus {
-    CREATED,
+    SCHEDULED,
     ONGOING,
     COMPLETED;
 }

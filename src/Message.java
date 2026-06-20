@@ -2,12 +2,12 @@ import java.time.LocalTime;
 
 public class Message {
     private String message;
-    private String senderId;
+    private User sender;
     private LocalTime time;
 
-    public Message(String message, String senderId) {
+    public Message(String message, User sender) {
         this.message = message;
-        this.senderId = senderId;
+        this.sender = sender;
         this.time = LocalTime.now();
     }
 
@@ -19,11 +19,15 @@ public class Message {
         this.message = message;
     }
 
-    public String getSenderId() {
-        return senderId;
+    public User getSender() {
+        return sender;
     }
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public String toString() {
+        return "Message sent by " + sender.getName() + " message : " + message + " time : " + time;
     }
 }

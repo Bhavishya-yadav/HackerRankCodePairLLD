@@ -23,13 +23,14 @@ public class Session {
         this.messages = new ArrayList<>();
         this.observers = new ArrayList<>();
         this.observers.add(new ConsoleObserver());
-        this.status = SessionStatus.CREATED;
-        notifyObservers("Session created");
+        this.status = SessionStatus.ONGOING;
+        notifyObservers("Session created by interviewer : " + interviewer.getName());
     }
 
     public void addParticipant(User user) throws Exception {
         activeSessionCheck();
         participants.add(user);  
+        notifyObservers("Participant joined for interview " + user.getName());
     }
 
     public void addCandidate(User user) throws Exception {
@@ -37,7 +38,7 @@ public class Session {
         if(candidate != null && candidate.getId() != user.getId()) 
             throw new Exception("Candidate is already there!!!!");
         candidate = user;
-        notifyObservers("Candidate joined interview");
+        notifyObservers("Candidate joined interview " + user.getName());
     }
 
     private void notifyObservers(String event) {
@@ -47,6 +48,16 @@ public class Session {
     private void activeSessionCheck() throws Exception {
         if(this.status.equals(SessionStatus.COMPLETED))
             throw new Exception("Session is already done and dusted");
+    }
+
+    public void sendMessage(String message, User sender) {
+        Message m1 = new Message(message, sender);
+        messages.add(m1);
+        notifyObservers(m1.toString());
+    }
+
+    public void editCode(User user, String content) {
+        editor.setContent(content);
     }
 
     public String getSessionId() {
@@ -73,6 +84,33 @@ public class Session {
         return status;
     }
 
+    public CodeEditor getEditor() {
+        return editor;
+    }
 
+    public String showCurrentCode() {
+        return editor.getContent();
+    }
 
+    public void rollbackToVersion(int version) throws Exception {
+        editor.rollbackToVersion(version);
+    }
+
+    public void leave(User user) throws Exception {
+        if(user.getId().equals(candidate.getId())) {
+            notifyObservers("Candidate left!!!!");
+        } else if(user.getId().equals(interviewer.getId())) {
+            notifyObservers("Interviewer left!!!!");
+        } else {
+            if(participants.contains(user)) {
+                participants.remove(user);
+            } else {
+                throw new Exception("No such participant exist!!!!");
+            }
+        }
+    }
+
+    public void endSession() {
+        notifyObservers("Event ended!!!");
+    }
 }
